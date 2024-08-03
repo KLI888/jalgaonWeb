@@ -10,7 +10,7 @@ axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 axios.defaults.withCredentials = true;
 
-const client = axios.create({ baseURL: 'http://127.0.0.1:8000' });
+const client = axios.create({ baseURL: import.meta.env.VITE_DJANGO_API });
 
 client.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
@@ -21,6 +21,7 @@ client.interceptors.request.use((config) => {
 }, (error) => Promise.reject(error));
 
 function LoginSignup() {
+  const djangoApi = import.meta.env.VITE_DJANGO_API;
   // const {  } = useContext(LoginContext);
   const { user, setUser, isLogin, setIsLogin } = useContext(UserContext);
   const { closeForm, setCloseForm } = useContext(FormContext);
@@ -31,7 +32,7 @@ function LoginSignup() {
 
   const getCsrfToken = async () => {
     try {
-        const response = await axios.get('http://127.0.0.1:8000/app/csrf-token/');
+        const response = await axios.get(`${djangoApi}/app/csrf-token/`);
         return response.data.csrfToken;
     } catch (error) {
         console.error('Error fetching CSRF token:', error);
@@ -44,7 +45,7 @@ function LoginSignup() {
     const csrfToken = await getCsrfToken();
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/app/register/', {
+      const response = await axios.post(`${djangoApi}/app/register/`, {
         phone_number: phoneNumber,
         password: userPassword
       });
@@ -60,7 +61,7 @@ function LoginSignup() {
 const handleLoginSubmit = async (event) => {
   event.preventDefault();
   try {
-    const response = await axios.post('http://127.0.0.1:8000/app/login/', {
+    const response = await axios.post(`${djangoApi}/app/login/`, {
       phone_number: phoneNumber,
       password: userPassword
     });
@@ -86,7 +87,7 @@ const handleLoginSubmit = async (event) => {
 
 
   try {
-    const response = await axios.post('http://127.0.0.1:8000/app/tokenKey/', {
+    const response = await axios.post(`${djangoApi}/app/tokenKey/`, {
       phone_number: phoneNumber,
       password: userPassword
     });

@@ -4,11 +4,13 @@ import './Services.css'
 import axios from 'axios';
 
 function Services() {
+    const djangoApi = import.meta.env.VITE_DJANGO_API;
+
     const [categories, setCategories] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/app/categorys/')
+        axios.get(`${djangoApi}/app/categorys/`)
             .then(response => {
                 setCategories(response.data.categories);
             })
@@ -22,7 +24,7 @@ function Services() {
                 {categories.map(category => (
                     <Link to={`/categories/${category.id}/${category.main_category}`}>
                     <div key={category.id} className="service">
-                        <img src={`http://127.0.0.1:8000${category.category_img.category_img}`} alt={category.category_img.img_name} />
+                        <img src={`${djangoApi}${category.category_img.category_img}`} alt={category.category_img.img_name} />
                         <p>{category.main_category}</p>
                     </div>
                     </Link>

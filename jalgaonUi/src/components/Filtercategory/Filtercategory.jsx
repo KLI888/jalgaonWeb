@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import './Filtercategory.css'
 import axios from 'axios';
 function Filtercategory({ mainCategoryId, mainCategory }) {
+    const djangoApi = import.meta.env.VITE_DJANGO_API;
     const [subCategories, setSubCategories] = useState([]);
 
     useEffect(()=>{
         if (mainCategory) {
-            axios.get('http://127.0.0.1:8000/app/subCategorys/')
+            axios.get(`${djangoApi}/app/subCategorys/`)
               .then(sub_response => {
                 const filteredSubCategories = sub_response.data.categories.filter(
                   subCategory => subCategory.main_category === mainCategory
@@ -29,7 +30,7 @@ function Filtercategory({ mainCategoryId, mainCategory }) {
 
                 {subCategories.map(category=>(
                 <div className="category_card">
-                    <img src={`http://127.0.0.1:8000/${category.sub_category_img}`} alt="" />
+                    <img src={`${djangoApi}/${category.sub_category_img}`} alt="" />
                     <p>{category.sub_category}</p>
                 </div>
                 ))}

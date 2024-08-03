@@ -5,6 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import get_user_model, login, logout, authenticate
 from app.serializers import *
 from app.models import *
+from django.core.paginator import Paginator
 
 import logging
 
@@ -294,3 +295,89 @@ class LikedShopsView(APIView):
             liked_shop = LikedShops.objects.create(user=user, shop_listing=shop_listing)
             return Response(LikedShopsSerializer(liked_shop).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserListedShops(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user_id = request.query_params.get('user_id', None)
+        if not user_id:
+            return Response({"error": "User ID not provided"}, status=400)
+        listed_shops = ShopListing.objects.filter(user=user_id)
+        serializer = ShopListingSerializer(listed_shops, many=True)
+        return Response(serializer.data)
+
+
+class UserListedShopsEdit(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        shop_id = request.query_params.get('shop_id', None)
+        if not shop_id:
+            return Response({"error": "Shop ID not provided"}, status=400)
+
+        try:
+            listed_shop = ShopListing.objects.get(id=shop_id)
+        except ShopListing.DoesNotExist:
+            return Response({"error": "Shop not found"}, status=404)
+
+        serializer = ShopListingSerializer(listed_shop)
+        return Response(serializer.data)
+
+
+# # views.py
+# from rest_framework import generics
+# from rest_framework.permissions import IsAuthenticated
+# from .models import ShopListing
+# from .serializers import ShopListingSerializer
+
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+class UpdateShopListingView(APIView):
+    def put(self, request, *args, **kwargs):
+        shop_id = request.query_params.get('shop_id')
+        try:
+            shop_listing = ShopListing.objects.get(pk=shop_id)
+        except ShopListing.DoesNotExist:
+            return Response({'error': 'ShopListing not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ShopListingSerializer(shop_listing, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+def submit_review(request):
+    user = request.user
+    shop_listing_id = request.data.get('shop_listing')
+    shop_listing = ShopListing.objects.get(id=shop_listing_id)
+    
+    data = {
+        'user': user.id,
+        'shop_listing': shop_listing.id,
+        'rating_star': request.data.get('rating_star'),
+        'user_review': request.data.get('user_review'),
+    }
+
+    serializer = ShopReviewSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+def get_shop_reviews(request):
+    shop_id = request.data.get('shop_listing')
+    reviews = ShopReview.objects.all()
+    # reviews = ShopReview.objects.filter(shop_listing=shop_id)
+    serializer = ShopReviewSerializer(reviews, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

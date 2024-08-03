@@ -10,6 +10,7 @@ const adTypeOptions = [
 ];
 
 function AddAdvertiseForm() {
+    const apiUrl = `${import.meta.env.VITE_DJANGO_API}/app/adsListing/`;
     const { user } = useContext(UserContext);
 
     const [formData, setFormData] = useState({
@@ -59,7 +60,7 @@ function AddAdvertiseForm() {
 
         try {
             const response = await axios.post(
-                'http://127.0.0.1:8000/app/adsListing/',
+                apiUrl,
                 data,               
                 {
                     headers: {

@@ -4,10 +4,13 @@ import axios from 'axios';
 import { UserContext } from '../../context/UserContext';
 
 function Likedpage() {
+  const djangoApi = import.meta.env.VITE_DJANGO_API;
+  // const apiUrl = ;
   const { user } = useContext(UserContext);
   const [likedPosts, setLikedPosts] = useState([]);
 
   useEffect(() => {
+    console.log(djangoApi);
     const token = localStorage.getItem('token');
 
     console.log("Token:", token);
@@ -17,10 +20,10 @@ function Likedpage() {
       console.error('No token found in localStorage');
       return;
     }
-
+    // http://127.0.0.1:8000/app/likedShops/
     const fetchLikedShops = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/app/likedShops/', {
+        const response = await axios.get(`${djangoApi}/app/likedShops/`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },

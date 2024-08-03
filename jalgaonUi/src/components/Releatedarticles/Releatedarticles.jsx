@@ -6,11 +6,13 @@ import axios from 'axios'
 
 
 export default function RelatedArticles() {
+  const djangoApi = import.meta.env.VITE_DJANGO_API;
+
   const [articleData, setArticleData] = useState([])
   useEffect(() => {
     const getArticlesData = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/app/active-articles/");
+        const response = await axios.get(`${djangoApi}/app/active-articles/`);
         setArticleData(response.data);
         console.log(response.data);
         console.log("Data fetched successfully");

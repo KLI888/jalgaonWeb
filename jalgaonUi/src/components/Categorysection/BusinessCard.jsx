@@ -3,11 +3,14 @@ import { Link } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import axios from 'axios';
 
-function BusinessCard({ businessData, is_like }) {
+function BusinessCard({ businessData, is_like, is_edit=false }) {
+    console.log(businessData);
+    const djangoApi = import.meta.env.VITE_DJANGO_API
     const { user } = useContext(UserContext);
-    const img_url = is_like ? "http://127.0.0.1:8000/" : "http://127.0.0.1:8000/media/";
+    const img_url = is_like ? `${djangoApi}` : `${djangoApi}/media/`;
+    // const img_url = is_like ? "http://127.0.0.1:8000/" : "http://127.0.0.1:8000/media/";
     const token = localStorage.getItem('token');
-
+    console.log(businessData.id);
     const addLikedShop = async (userId, shopListingId) => {
         if (!token) {
             console.error('No token found in localStorage');
@@ -15,7 +18,10 @@ function BusinessCard({ businessData, is_like }) {
         }
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/app/likedShops/', {
+            const response = await axios.post(
+                // 'http://127.0.0.1:8000/app/likedShops/',
+                `${djangoApi}/app/likedShops/`,
+            {
                 user: userId,               // Ensure this matches the expected field name
                 shop_listing: shopListingId // Ensure this matches the expected field name
             }, {
@@ -40,7 +46,14 @@ function BusinessCard({ businessData, is_like }) {
             <div className="business_info">
                 <p className='business_name'>
                     <span>{businessData.business_name}</span>
-                    <i onClick={() => addLikedShop(user.id, businessData.id)} className='bx bx-heart'></i>
+                    {is_edit ? (
+                        <Link to={`/editForm/${businessData.id}`}>
+                            <i onClick={() => addLikedShop(user.id, businessData.id)} className='bx bxs-edit'></i>
+                        </Link>
+
+                    ) : (
+                        <i onClick={() => addLikedShop(user.id, businessData.id)} className='bx bx-heart'></i>
+                    )}
                 </p>
                 <div className="business_rating">
                     <span>5</span>

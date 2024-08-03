@@ -1,9 +1,51 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import axios from 'axios'
+// import { UserContext } from '../../context/UserContext'
+import { format } from 'date-fns';
 
-function CompanyWork({businessData}) {
+
+
+function CompanyWork({ businessData }) {
+    const djangoApi = import.meta.env.VITE_DJANGO_API
+
+    // const { user } = useContext(UserContext)
     const [rating, setRating] = useState(0)
+    const [review, setReview] = useState('');
+    const [reviews, setReviews] = useState([])
+
+    useEffect(() => {
+        const fetchReview = async () => {
+            const token = localStorage.getItem('tokenKey');
+
+            try {
+                const response = await axios.get(`${djangoApi}/app/get_shop_reviews/`, {
+                    params: {
+                        shop_listing: businessData.id
+                    },
+                    headers: {
+                        'Authorization': `Token ${token}`,  // Replace with actual token
+                    },
+                });
+                console.log(response.data);
+                const filteredReview = response.data.filter(review => review.shop_listing === businessData.id)
+                console.log(filteredReview);
+                setReviews(filteredReview);
+                return response.data
+            } catch (error) {
+                console.error('Error fetching reviews:', error);
+            }
+        };
+        fetchReview();
+    }, [businessData.id]);
+
+
+
     const [hover, setHover] = useState(null)
     const [isClicked, setIsClicked] = useState(false);
+
+
+
+
 
     const handleMouseEnter = (currentRating) => {
         setHover(currentRating);
@@ -12,7 +54,7 @@ function CompanyWork({businessData}) {
 
     const handleMouseLeave = () => {
         if (!isClicked) {
-        setHover(null);
+            setHover(null);
         }
     };
 
@@ -20,6 +62,31 @@ function CompanyWork({businessData}) {
         setRating(currentRating);
         setIsClicked(true);
     };
+
+    const submitReview = async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('tokenKey');
+
+        const formData = {
+            // user: user.id,
+            rating_star: rating,
+            user_review: review,
+            shop_listing: businessData.id,
+        };
+
+        try {
+            const response = await axios.post(`${djangoApi}/app/shop_reviews/`, formData, {
+                headers: {
+                    'Authorization': `Token ${token}`,  // Replace with actual token
+                },
+            });
+            console.log('Review submitted successfully:', response.data);
+            alert("Review submited")
+        } catch (error) {
+            console.error('Error submitting review:', error);
+        }
+
+    }
 
     return (
         <div className="companyWork">
@@ -60,9 +127,9 @@ function CompanyWork({businessData}) {
             <div className="company_photos">
                 <h1>Photos</h1>
                 <div className="phtos">
-                    <img src={`http://127.0.0.1:8000/${businessData.business_img_one}`} alt="" />
-                    <img src={`http://127.0.0.1:8000/${businessData.business_img_two}`} alt="" />
-                    <img src={`http://127.0.0.1:8000/${businessData.business_img_three}`} alt="" />
+                    <img src={`${djangoApi}/${businessData.business_img_one}`} alt="" />
+                    <img src={`${djangoApi}/${businessData.business_img_two}`} alt="" />
+                    <img src={`${djangoApi}/${businessData.business_img_three}`} alt="" />
                 </div>
             </div>
             <div className="company_reviw">
@@ -77,7 +144,7 @@ function CompanyWork({businessData}) {
                                     setRating(currentRating)
                                 }} value={currentRating} name='rating' />
                                 <i
-                                    
+
                                     className={`bx bxs-star ${currentRating <= (hover || rating) ? 'star_fill' : ''}`}
                                     onMouseEnter={() => handleMouseEnter(currentRating)}
                                     onMouseDown={() => handleMouseDown(currentRating)}
@@ -88,9 +155,12 @@ function CompanyWork({businessData}) {
                     })}
                 </div>
                 <div className="review_form">
-                    <form action="">
+                    <form action="" onSubmit={submitReview}>
                         <input type="hidden" value={rating} />
-                        <textarea name="" id="" placeholder='Write a review....'></textarea><br />
+                        <textarea
+                            value={review}
+                            onChange={(e) => setReview(e.target.value)}
+                            name="" id="" placeholder='Write a review....'></textarea><br />
                         <input className='review_btn' type="submit" value="Add Review" />
                     </form>
                 </div>
@@ -104,57 +174,27 @@ function CompanyWork({businessData}) {
                     <i className='bx bxs-star'></i>
                     <i className='bx bxs-star'></i>
                 </div>
-                <div className="user_review_card">
-                    <div className="review_name">
-                        <p>Sanket Satghar</p>
-                        <div className="user_review_star">
-                            <i className='bx bxs-star'></i>
-                            <i className='bx bxs-star'></i>
-                            <i className='bx bxs-star'></i>
-                            <i className='bx bxs-star'></i>
+
+
+                {reviews.map((review, index) => (
+                    <div className="user_review_card">
+                        <div className="review_name">
+                            <p>{review.user.phone_number}</p>
+                            <div className="user_review_star">
+                                {[...Array(parseInt(review.rating_star))].map((star, idx) => (
+                                    <i key={idx} className='bx bxs-star'></i>
+                                ))}                                
+                            </div>
+                        </div>
+                        <div className="user_review">
+                            <p>{review.user_review}</p>
+                        </div>
+                        <div className="review_date">
+                            <p>-{format(new Date(review.timestamp), 'dd MMMM yyyy')}</p>
                         </div>
                     </div>
-                    <div className="user_review">
-                        <p>S.K. Auto offers excellent service and quality parts. The staff is knowledgeable and friendly, ensuring a smooth and efficient experience. Highly recommend for all your automotive needs!</p>
-                    </div>
-                    <div className="review_date">
-                        <p>-10 July 2024</p>
-                    </div>
-                </div>
-                <div className="user_review_card">
-                    <div className="review_name">
-                        <p>Pavan Shimpi</p>
-                        <div className="user_review_star">
-                            <i className='bx bxs-star'></i>
-                            <i className='bx bxs-star'></i>
-                            <i className='bx bxs-star'></i>
-                            <i className='bx bxs-star'></i>
-                        </div>
-                    </div>
-                    <div className="user_review">
-                        <p>S.K. Auto offers excellent service and quality parts. The staff is knowledgeable and friendly, ensuring a smooth and efficient experience. Highly recommend for all your automotive needs!</p>
-                    </div>
-                    <div className="review_date">
-                        <p>-10 July 2024</p>
-                    </div>
-                </div>
-                <div className="user_review_card">
-                    <div className="review_name">
-                        <p>Yash Patil</p>
-                        <div className="user_review_star">
-                            <i className='bx bxs-star'></i>
-                            <i className='bx bxs-star'></i>
-                            <i className='bx bxs-star'></i>
-                            <i className='bx bxs-star'></i>
-                        </div>
-                    </div>
-                    <div className="user_review">
-                        <p>S.K. Auto offers excellent service and quality parts. The staff is knowledgeable and friendly, ensuring a smooth and efficient experience. Highly recommend for all your automotive needs!</p>
-                    </div>
-                    <div className="review_date">
-                        <p>-10 July 2024</p>
-                    </div>
-                </div>
+                ))}
+
             </div>
         </div>
     )

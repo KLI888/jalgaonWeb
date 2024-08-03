@@ -7,9 +7,11 @@ import axios from 'axios';
 
 
 function Categorytile() {
+  const djangoApi = import.meta.env.VITE_DJANGO_API
+
   const [categories, setCategories] = useState([]);
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/app/categorys/')
+    axios.get(`${djangoApi}/app/categorys/`)
         .then(response => {
             setCategories(response.data.categories);
         })

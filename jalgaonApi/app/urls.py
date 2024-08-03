@@ -19,6 +19,7 @@ urlpatterns = [
 
     path('shopListing/', ShopListingCreateView.as_view(), name='shopListing'),
     path('adsListing/', AdsListingCreateAPIView.as_view(), name='adsListing'),
+    path('updateShop/', UpdateShopListingView.as_view(), name='adsListing'),
 
 
 
@@ -36,7 +37,11 @@ urlpatterns = [
     path('active-articles/', ActiveArticleListView.as_view(), name='active-article-list'),
 
 
-    path('likedShops/', LikedShopsView.as_view(), name='liked_shops')
+    path('likedShops/', LikedShopsView.as_view(), name='liked_shops'),
+    path('listedShops/', UserListedShops.as_view(), name='listed_shops'),
+    path('editShopsData/', UserListedShopsEdit.as_view(), name='listed_shops'),
+    path('shop_reviews/', submit_review, name='submit_review'),
+    path('get_shop_reviews/', get_shop_reviews, name='get_shop_reviews'),
 
 
 

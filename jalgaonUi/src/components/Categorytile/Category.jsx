@@ -3,11 +3,12 @@ import './Category.css'
 import axios from 'axios';
 
 function Category({ name }) {
+    const djangoApi = import.meta.env.VITE_DJANGO_API
     const [subCategories, setSubCategories] = useState([]);
 
     useEffect(()=>{
         if (name) {
-            axios.get('http://127.0.0.1:8000/app/subCategorys/')
+            axios.get(`${djangoApi}/app/subCategorys/`)
               .then(sub_response => {
                 const filteredSubCategories = sub_response.data.categories.filter(
                   subCategory => subCategory.main_category === name
@@ -27,7 +28,7 @@ function Category({ name }) {
                 {subCategories.map(category=>(
                 <div className="category_business">
                     <div className="category_img">
-                    <img src={`http://127.0.0.1:8000/${category.sub_category_img}`} alt="" />
+                    <img src={`${djangoApi}/${category.sub_category_img}`} alt="" />
                     </div>
                     <p className="business_name">{category.sub_category}</p>
                 </div>

@@ -4,6 +4,8 @@ import axios from 'axios';
 // import './ArticleView.css';  // Make sure you create this CSS file for styling
 
 function ArticleView() {
+    const djangoApi = import.meta.env.VITE_DJANGO_API;
+
     const { articleId } = useParams(); 
     const [articleData, setArticleData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -12,7 +14,7 @@ function ArticleView() {
     useEffect(() => {
         const fetchArticleData = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/app/articleGet/`, { params: { articleId } });
+                const response = await axios.get(`${djangoApi}/app/articleGet/`, { params: { articleId } });
                 setArticleData(response.data);
                 setLoading(false);
             } catch (error) {
@@ -41,7 +43,7 @@ function ArticleView() {
                 <div className="article_content">
                     <div className="img_short_desc">
                         <div className="article_img_content">
-                            <img src={`http://127.0.0.1:8000/${articleData.blog_img}`} alt={articleData.title} />
+                            <img src={`${djangoApi}/${articleData.blog_img}`} alt={articleData.title} />
                         </div>
                         <div className="article_title">
                             <h1>{articleData.title}</h1>

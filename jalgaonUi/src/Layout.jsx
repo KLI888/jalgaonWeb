@@ -7,13 +7,14 @@ import axios from 'axios';
 import { FormContext } from './context/FormContext';
 import { UserContext } from './context/UserContext';
 import { LoginContext } from './context/LoginContext';
+import LoginSignup from './components/LoginSignup/LoginSignup';
 
 
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 axios.defaults.withCredentials = true;
 
-const client = axios.create({ baseURL: 'http://127.0.0.1:8000' });
+const client = axios.create({ baseURL: import.meta.env.VITE_DJANGO_API });
 
 client.interceptors.request.use((config) => {
   const token = localStorage.getItem('authToken');
@@ -55,6 +56,7 @@ function Layout() {
             <Outlet />
             <Footer />
             <Bottomnav />
+            <LoginSignup />
         </div>
     )
 }

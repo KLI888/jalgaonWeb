@@ -8,8 +8,11 @@ import axios from 'axios'
 
 
 function BusinessDetailsPage() {
+  const djangoApi = import.meta.env.VITE_DJANGO_API;
+
   const {productId} = useParams()
   const [businessData, setBusinessData] = useState([])
+  // const [reviews, setReviews] = useState([])
 
   useEffect(() => {
     const token = localStorage.getItem('tokenKey');
@@ -18,7 +21,7 @@ function BusinessDetailsPage() {
       try {
         console.log("Fetching data...");
         const token = "your_token_here"; // Replace with your actual token
-        const response = await axios.get("http://127.0.0.1:8000/app/business-view/", {
+        const response = await axios.get(`${djangoApi}/app/business-view/`, {
           params: { productId },
           headers: {
             Authorization: `Token ${token}` // Using Token authentication scheme
@@ -34,6 +37,9 @@ function BusinessDetailsPage() {
 
     fetchData();
   }, [productId]);
+
+
+
   return (
     <div className='main_section'>
         <div className="page_location_tow"><Link to='/'>Home</Link> &gt; Search &gt; <Link to='/categories'>{businessData.main_category}</Link> &gt; <span>{businessData.business_name}</span></div>

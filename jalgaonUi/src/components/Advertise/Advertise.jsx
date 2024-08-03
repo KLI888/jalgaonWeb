@@ -14,13 +14,15 @@ const divStyle = {
 
 
 function Advertise() {
+  const apiUrl = `${import.meta.env.VITE_DJANGO_API}/app/crousel-ads/`;
+  const apiUrl_banner = `${import.meta.env.VITE_DJANGO_API}/app/banner-ads/`;
   const [sliedData, setSlideData] = useState([])
   const [slide, setSlide] = useState(0);
   const [ads, setAds] = useState([]);
 
 
   useEffect(()=> {
-    axios.get('http://127.0.0.1:8000/app/crousel-ads/')
+    axios.get(apiUrl)
       .then(response => {
         setSlideData(response.data.ads);
       })
@@ -30,7 +32,7 @@ function Advertise() {
   }, [])
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/app/banner-ads/')
+    axios.get(apiUrl_banner)
       .then(response => {
         console.log(response.data);
         setAds(response.data);
@@ -55,7 +57,7 @@ function Advertise() {
     <div className="advertise_container">
       <div className="slide_container">
         {sliedData.map((item, index) => {
-          return <img key={index} src={`http://127.0.0.1:8000/${item.crousel_add_img}`} className={slide === index ? "slider_img_div" : "slider_img_div_hidden"} />;
+          return <img key={index} src={`${import.meta.env.VITE_DJANGO_API}/${item.crousel_add_img}`} className={slide === index ? "slider_img_div" : "slider_img_div_hidden"} />;
         })}
         <span className="indicators">
           {sliedData.map((_, index)=> {
@@ -66,10 +68,10 @@ function Advertise() {
 
       <div className="banner_ads">
         {ads.banner_add_home_one && (
-          <img src={`http://127.0.0.1:8000${ads.banner_add_home_one}`} alt="Home Banner One" />
+          <img src={`${import.meta.env.VITE_DJANGO_API}/${ads.banner_add_home_one}`} alt="Home Banner One" />
         )}
         {ads.banner_add_home_two && (
-          <img src={`http://127.0.0.1:8000${ads.banner_add_home_two}`} alt="Home Banner Two" />
+          <img src={`${import.meta.env.VITE_DJANGO_API}/${ads.banner_add_home_two}`} alt="Home Banner Two" />
         )}
       </div>
     </div>

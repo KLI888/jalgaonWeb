@@ -4,6 +4,7 @@ import axios from 'axios';
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
+    const djangoApi = import.meta.env.VITE_DJANGO_API;
     const [user, setUser] = useState(null);
     const [isLogin, setIsLogin] = useState(false);
 
@@ -12,7 +13,7 @@ export const UserProvider = ({ children }) => {
             const token = localStorage.getItem('token');
             if (token) {
                 try {
-                    const response = await axios.get('http://127.0.0.1:8000/app/user/', {
+                    const response = await axios.get(`${djangoApi}/app/user/`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     setUser(response.data.user);

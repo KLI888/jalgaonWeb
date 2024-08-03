@@ -8,11 +8,11 @@ import { resolvePath } from 'react-router-dom';
 
 
 function Stocktickle() {
-
+  const djangoApi = import.meta.env.VITE_DJANGO_API;
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/app/finance-data/')
+    axios.get(`${djangoApi}/app/finance-data/`)
       .then(response => {
         setData(response.data.financeData);
       })

@@ -4,12 +4,14 @@ import BlogSlider from './BlogSlider';
 import axios from 'axios';
 
 function Articles() {
+    const djangoApi = import.meta.env.VITE_DJANGO_API;
+
     const [articleData, setArticleData] = useState([]);
 
     useEffect(() => {
         const getArticlesData = async () => {
             try {
-                const response = await axios.get("http://127.0.0.1:8000/app/articles/");
+                const response = await axios.get(`${djangoApi}/app/articles/`);
                 setArticleData(response.data);
                 console.log(response.data);
                 console.log("Data fetched successfully");

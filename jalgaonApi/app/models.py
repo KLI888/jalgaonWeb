@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 class UserManager(BaseUserManager):
     def create_user(self, phone_number, password=None, **extra_fields):
@@ -107,6 +108,9 @@ class ShopListing(models.Model):
 
 
 
+
+
+
 class HomeCrouselAds(models.Model):
     crousel_add_img = models.ImageField(upload_to='static/assets/AdsImages')
 
@@ -187,4 +191,14 @@ class LikedShops(models.Model):
     def __str__(self):
         return f"{self.user}->{self.shop_listing}"
     
+class ShopReview(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    shop_listing = models.ForeignKey(ShopListing, on_delete=models.CASCADE)
+    rating_star = models.CharField(max_length=5)
+    user_review = models.CharField(max_length=2000)
+    timestamp = models.DateTimeField(default=timezone.now)  # New field
+
+
+    def __str__(self):
+        return f"{self.user}->{self.shop_listing}"
     

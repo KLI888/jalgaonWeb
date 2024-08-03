@@ -67,6 +67,15 @@ class SubCategorySerializer(serializers.ModelSerializer):
 class ShopListingSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShopListing
+        fields = '__all__'
+
+    def update(self, instance, validated_data):
+        # Only update fields that are provided
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
+
         # fields = [
         #     'user', 'main_category', 'sub_category', 'business_name',
         #     'business_rating', 'business_address','business_banner',
@@ -77,17 +86,17 @@ class ShopListingSerializer(serializers.ModelSerializer):
         #     'business_email', 'insta_link', 'facebook_link', 'website_link',
         #     'gmap_link'
         # ]        
-        fields = [
-            'user', 'main_category', 'sub_category', 'business_name',
-            'business_rating', 'business_address', 'business_banner',
-            'sub_domain_one', 'sub_domain_two', 'sub_domain_three',
-            'sub_domain_four', 'sub_domain_five', 'sub_domain_six',
-            'sub_domain_seven', 'business_origin', 'business_dob',
-            'business_gst', 'business_description', 'business_img_one',
-            'business_img_two', 'business_img_three', 'business_no',
-            'business_email', 'insta_link', 'facebook_link', 'website_link',
-            'gmap_link'
-        ]
+        # fields = [
+        #     'user', 'main_category', 'sub_category', 'business_name',
+        #     'business_rating', 'business_address', 'business_banner',
+        #     'sub_domain_one', 'sub_domain_two', 'sub_domain_three',
+        #     'sub_domain_four', 'sub_domain_five', 'sub_domain_six',
+        #     'sub_domain_seven', 'business_origin', 'business_dob',
+        #     'business_gst', 'business_description', 'business_img_one',
+        #     'business_img_two', 'business_img_three', 'business_no',
+        #     'business_email', 'insta_link', 'facebook_link', 'website_link',
+        #     'gmap_link'
+        # ]
 
 class HomeCrouselAdsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -140,3 +149,11 @@ class LikedShopsCreateSerializer(serializers.Serializer):
     
     def create(self, validated_data):
         return LikedShops.objects.create(**validated_data)
+
+
+class ShopReviewSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)  # Assuming you have UserSerializer
+
+    class Meta:
+        model = ShopReview
+        fields = ['user', 'shop_listing', 'rating_star', 'user_review', 'timestamp']

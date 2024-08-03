@@ -15,6 +15,7 @@ import Articles from './components/Releatedarticles/Articles';
 import ArticleViewPage from './pages/ArticleViewPage';
 import AboutPage from './pages/AboutPage';
 import TermsPage from './pages/TermsPage';
+import AddListingForm from './components/AllForms/AddListingForm';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<Layout />}>
@@ -30,6 +31,7 @@ const router = createBrowserRouter(
       
       <Route path='about' element={<AboutPage />} />
       <Route path='termsAndCondition' element={<TermsPage />} />
+      <Route path='editForm/:shopId' element={<AddListingForm is_edit={true}/>} />
     </Route>
   )
 );

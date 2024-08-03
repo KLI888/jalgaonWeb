@@ -2,6 +2,8 @@ import React from 'react'
 import './BusinessCompo.css'
 import { Link } from 'react-router-dom'
 function BusinessDetailsCard({businessData}) {
+    const djangoApi = import.meta.env.VITE_DJANGO_API
+
     return (
         <div className="business_details_card">
             <div className="business_card">
@@ -32,7 +34,7 @@ function BusinessDetailsCard({businessData}) {
                     </div>
                 </div>
                 <div className="business_img">
-                    <img src={`http://127.0.0.1:8000/${businessData.business_banner}`} alt="" />
+                    <img src={`${djangoApi}/${businessData.business_banner}`} alt="" />
                 </div>
             </div>
         </div>
