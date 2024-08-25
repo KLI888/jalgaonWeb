@@ -1,7 +1,9 @@
 // utils/csrf.js
 
 export function getCsrfToken() {
-    return fetch('http://127.0.0.1:8000/app/csrf-token/', {
+    const djangoApi = import.meta.env.VITE_DJANGO_API;
+
+    return fetch(`${djangoApi}/app/csrf-token/`, {
       method: 'GET',
       credentials: 'include', // Include cookies in the request
     })

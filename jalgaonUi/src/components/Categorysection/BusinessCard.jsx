@@ -39,8 +39,9 @@ function BusinessCard({ businessData, is_like, is_edit=false }) {
     };
 
     return (
+        <Link to={`/productView/${businessData.id}`}>
         <div className="business_card">
-            <div className="business_img">
+            <div className="business_imgg">
                 <img src={`${img_url}${businessData.business_banner}`} alt="" />
             </div>
             <div className="business_info">
@@ -76,6 +77,8 @@ function BusinessCard({ businessData, is_like, is_edit=false }) {
                 </div>
             </div>
         </div>
+        </Link>
+        
     );
 }
 

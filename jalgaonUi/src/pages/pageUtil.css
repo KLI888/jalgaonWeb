@@ -19,6 +19,7 @@
 
 .main_section {
     position: relative;
+    overflow: hidden;
 }
 
 

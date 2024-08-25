@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom'
 import './Categorysection.css'
 import BusinessCard from './BusinessCard'
 import axios from 'axios';
-function Categorysection({businessData}) {
-    const [ads, setAds] = useState([]);
+function Categorysection({businessData, mainCategory}) {
+  const djangoApi = import.meta.env.VITE_DJANGO_API;
+  const [ads, setAds] = useState([]);
+  
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/app/banner-ads/')
+        axios.get(`${djangoApi}/app/banner-ads/`)
           .then(response => {
             console.log(response.data);
             setAds(response.data);
@@ -20,8 +22,8 @@ function Categorysection({businessData}) {
     return (
         <div className="business_section">
             <div className="business_content">
-               <div className="page_location"><Link to=''>Home</Link> &gt; Search &gt; <span>Automotive</span></div> 
-               <div className="result_heading">Showing Results for <span>Automotive</span></div>
+               <div className="page_location"><Link to=''>Home</Link> &gt; Search &gt; <span>{mainCategory}</span></div> 
+               <div className="result_heading">Showing Results</div>
                <div className="business_cards_ads">
                 <div className="business_cards">
                 {businessData.map((business) => (
@@ -36,10 +38,10 @@ function Categorysection({businessData}) {
                     <BusinessCard/> */}
                 </div>
                 <div className="business_ads">
-                    <img src={`http://127.0.0.1:8000${ads.banner_add_category_one}`} alt="" />
-                    <img src={`http://127.0.0.1:8000${ads.banner_add_category_two}`} alt="" />
-                    <img src={`http://127.0.0.1:8000${ads.banner_add_category_three}`} alt="" />
-                    <img src={`http://127.0.0.1:8000${ads.banner_add_category_four}`} alt="" />
+                    <img src={`${djangoApi}${ads.banner_add_category_one}`} alt="" />
+                    <img src={`${djangoApi}${ads.banner_add_category_two}`} alt="" />
+                    <img src={`${djangoApi}${ads.banner_add_category_three}`} alt="" />
+                    <img src={`${djangoApi}${ads.banner_add_category_four}`} alt="" />
                 </div>
                </div>
                

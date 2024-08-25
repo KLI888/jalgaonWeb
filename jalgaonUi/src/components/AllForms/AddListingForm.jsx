@@ -4,6 +4,7 @@ import axios from 'axios';
 import './AddListingForm.css';
 import { UserContext } from '../../context/UserContext';
 import { useParams } from 'react-router-dom';
+import imageCompression from 'browser-image-compression';
 
 function AddListingForm({ is_edit = false }) {
     const { shopId } = useParams();
@@ -52,6 +53,17 @@ function AddListingForm({ is_edit = false }) {
         gmap_link: ''
     });
 
+    const getCsrfToken = async () => {
+        try {
+          const response = await axios.get(`${djangoApi}/app/csrf-token/`);
+          return response.data.csrfToken;
+        } catch (error) {
+          console.error('Error fetching CSRF token:', error);
+          return '';
+        }
+      };
+
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -83,9 +95,12 @@ function AddListingForm({ is_edit = false }) {
 
         if (is_edit && shopId) {
             const getShopData = async () => {
+                const csrfToken = await getCsrfToken();
+
                 try {
                     const response = await axios.get(apiUrl_editShop, {
                         headers: {
+                            'X-CSRFToken': csrfToken,
                             'Authorization': `Bearer ${localStorage.getItem('token')}`,
                         },
                         params: {
@@ -127,8 +142,64 @@ function AddListingForm({ is_edit = false }) {
         setFormData(prevData => ({
             ...prevData,
             [name]: type === 'file' ? files[0] : value
+            
         }));
     };
+
+
+    const handleFileChange = (e) => {
+        const { type, files } = e.target;
+    
+        if (type === 'file' && files.length > 0) {
+            const selectedFile = files[0];
+
+
+
+
+            setFormData(prevData => ({
+                ...prevData,
+                business_banner: selectedFile,
+                business_img_one: selectedFile,
+                business_img_two: selectedFile,
+                business_img_three: selectedFile,
+            }));
+        }
+    };
+    
+
+
+    // const handleFileChange = async (e) => {
+    //     const { type, files } = e.target;
+    
+    //     if (type === 'file' && files.length > 0) {
+    //         const selectedFile = files[0];
+    
+    //         // Define compression options
+    //         const options = {
+    //             maxSizeMB: 0.17, // Compress to a maximum size of 170KB
+    //             maxWidthOrHeight: 1920, // Optional: adjust based on your needs
+    //             useWebWorker: true, // Use web worker for faster compression
+    //         };
+
+
+    //         try {
+    //             // Compress the image
+    //             const compressedFile = await imageCompression(selectedFile, options);
+    //             console.log(compressedFile);
+                
+    //             // Update formData with the compressed file
+    //             setFormData(prevData => ({
+    //                 ...prevData,
+    //                 business_banner: compressedFile,
+    //                 business_img_one: compressedFile,
+    //                 business_img_two: compressedFile,
+    //                 business_img_three: compressedFile,
+    //             }));
+    //         } catch (error) {
+    //             console.error("Error compressing the image:", error);
+    //         }
+    //     }
+    // };
 
     const getUserLocation = (e) => {
         e.preventDefault();
@@ -153,6 +224,7 @@ function AddListingForm({ is_edit = false }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('tokenKey');
+        const csrfToken = await getCsrfToken();
 
         console.log(token);
         const data = new FormData();
@@ -177,6 +249,7 @@ function AddListingForm({ is_edit = false }) {
                 data,
                 {
                     headers: {
+                        'X-CSRFToken': csrfToken,
                         'Content-Type': 'multipart/form-data',
                         'Authorization': `Token ${token}`,  // Replace with actual token
                     },
@@ -466,34 +539,34 @@ function AddListingForm({ is_edit = false }) {
                                         //         ["business_banner"]: busniessBanner
                                         //     }));
                                         // }}
-                                        onChange={handleChange}
+                                        onChange={handleFileChange}
                                         required
                                     />
                                 </div>
-                                <div className="input_data">
+                                {/* <div className="input_data">
                                     <label htmlFor="imgOne">Business Photos</label>
                                     <input
                                         type="file"
                                         name="business_img_one"
                                         // onChange={(e)=>{setBusinessImgOne(e.target.files[0])}}
                                         onChange={handleChange}
-                                        required
+                                        // required
                                     />
                                     <input
                                         type="file"
                                         name="business_img_two"
                                         // onChange={(e)=>{setBusinessImgTwo(e.target.files[0])}}
                                         onChange={handleChange}
-                                        required
+                                        // required
                                     />
                                     <input
                                         type="file"
                                         name="business_img_three"
                                         // onChange={(e)=>{setBusinessImgThree(e.target.files[0])}}
                                         onChange={handleChange}
-                                        required
+                                        // required
                                     />
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                         <hr className="form_hr" />
@@ -763,10 +836,10 @@ function AddListingForm({ is_edit = false }) {
                                         //         ["business_banner"]: busniessBanner
                                         //     }));
                                         // }}
-                                        onChange={handleChange}
+                                        onChange={handleFileChange}
                                     />
                                 </div>
-                                <div className="input_data">
+                                {/* <div className="input_data">
                                     <label htmlFor="imgOne">Business Photos</label>
                                     <input
                                         type="file"
@@ -786,7 +859,7 @@ function AddListingForm({ is_edit = false }) {
                                         // onChange={(e)=>{setBusinessImgThree(e.target.files[0])}}
                                         onChange={handleChange}
                                     />
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                         <hr className="form_hr" />

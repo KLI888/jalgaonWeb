@@ -56,7 +56,7 @@ function Layout() {
             <Outlet />
             <Footer />
             <Bottomnav />
-            <LoginSignup />
+            {/* <LoginSignup /> */}
         </div>
     )
 }

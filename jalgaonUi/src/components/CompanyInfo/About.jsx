@@ -10,8 +10,8 @@ function About() {
             <h3>Founder and CEO</h3>
             <p><strong>Name:</strong> Mr. Rupesh Jain</p>
             <p><strong>Position:</strong> Founder and Visionary</p>
-            <p><strong>Contact No.:</strong> 9890295999</p>
-            <p><strong>Email ID:</strong> rupeshkjain@rediffmail.com</p>
+            <p><strong>Contact No.:</strong> 9272100299</p>
+            <p><strong>Email ID:</strong> rupesh@jalgaon.com</p>
             <p><strong>Bio:</strong> Mr. Rupesh Jain is a seasoned financial planner and advisor with over three decades of experience in finance, insurance, and loans. His deep expertise in financial matters has been instrumental in shaping the visionary idea behind jalgaon.com.</p>
           </div>
           <div className="contact-item">

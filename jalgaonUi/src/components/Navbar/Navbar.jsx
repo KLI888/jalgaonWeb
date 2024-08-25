@@ -25,6 +25,7 @@ client.interceptors.request.use((config) => {
 const Navbar = () => {
     const { isLogin, setIsLogin } = useContext(LoginContext);
     const { user, setUser } = useContext(UserContext);
+    const { closeSpecial, setCloseSpecial } = useContext(FormContext);
     const { closeForm, setCloseForm } = useContext(FormContext);
 
     const handleLogout = async (e) => {
@@ -81,7 +82,7 @@ const Navbar = () => {
                         ) : (
                             <p onClick={() => setCloseForm(!closeForm)} className="login_btn">Signup/Login</p>
                         )}
-                        <i className='menu bx bx-menu'></i>
+                        <i onClick={()=>setCloseSpecial(!closeSpecial)}  className='menu bx bx-menu'></i>
                     </div>
                 </div>
             </div>

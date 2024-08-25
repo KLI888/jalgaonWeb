@@ -147,6 +147,8 @@
 .companyWork h1 {
     font-size: 20px;
     font-weight: 600;
+    margin-bottom: 0;
+    text-align: start;
 }
 .company_brands {
     margin-bottom: 20px;

@@ -3,15 +3,25 @@ import Select from 'react-select';
 import axios from 'axios';
 import './AddListingForm.css';
 import { UserContext } from '../../context/UserContext';
-
 const adTypeOptions = [
     { value: 'BA', label: 'Banner Ads' },
     { value: 'CA', label: 'Carousel Ads' }
 ];
-
 function AddAdvertiseForm() {
+    const djangoApi = import.meta.env.VITE_DJANGO_API;
+
     const apiUrl = `${import.meta.env.VITE_DJANGO_API}/app/adsListing/`;
     const { user } = useContext(UserContext);
+
+    const getCsrfToken = async () => {
+        try {
+          const response = await axios.get(`${djangoApi}/app/csrf-token/`);
+          return response.data.csrfToken;
+        } catch (error) {
+          console.error('Error fetching CSRF token:', error);
+          return '';
+        }
+      };
 
     const [formData, setFormData] = useState({
         user: user ? user.id : null,
@@ -46,8 +56,9 @@ function AddAdvertiseForm() {
         e.preventDefault();
         console.log(formData);
         const token = localStorage.getItem('tokenKey');
+        const csrfToken = await getCsrfToken();
 
-        setFormData({ ...formData, ['user']: user.id });
+        // setFormData({ ...formData, ['user']: user.id });
 
 
         const data = new FormData();
@@ -64,6 +75,7 @@ function AddAdvertiseForm() {
                 data,               
                 {
                     headers: {
+                        'X-CSRFToken': csrfToken,
                         'Content-Type': 'multipart/form-data',
                         'Authorization': `Token ${token}`,  // Replace with actual token
                     },

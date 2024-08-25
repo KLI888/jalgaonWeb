@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model, login, logout, authenticate
 from app.serializers import *
 from app.models import *
 from django.core.paginator import Paginator
+from django.views.decorators.csrf import csrf_exempt
 
 import logging
 
@@ -57,8 +58,11 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 
 @ensure_csrf_cookie
 def get_csrf_token(request):
-    return JsonResponse({'csrfToken': request.META.get('CSRF_COOKIE', '')})
-
+    if request.method == 'GET':
+        return JsonResponse({'csrfToken': request.META.get('CSRF_COOKIE', '')})
+    else:
+        # Handle other HTTP methods if needed
+        return JsonResponse({'detail': f'Method "{request.method}" not allowed.'}, status=405)
 
 
 
@@ -136,6 +140,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
+
+
+
 class ObtainTokenKeyView(APIView):
     permission_classes = [AllowAny]  # Allow any user to access this view
 
@@ -226,6 +233,7 @@ class AdsListingCreateAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
         logger.debug(f"Received data: {request.data}")
+        
         serializer = AdsListingSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -348,8 +356,6 @@ class UpdateShopListingView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
@@ -357,20 +363,17 @@ def submit_review(request):
     user = request.user
     shop_listing_id = request.data.get('shop_listing')
     shop_listing = ShopListing.objects.get(id=shop_listing_id)
-    
     data = {
-        'user': user.id,
+        'user': user.id,  # Pass user ID instead of user object
         'shop_listing': shop_listing.id,
         'rating_star': request.data.get('rating_star'),
         'user_review': request.data.get('user_review'),
     }
-
-    serializer = ShopReviewSerializer(data=data)
+    serializer = ShopReviewCreateSerializer(data=data)
     if serializer.is_valid():
-        serializer.save()
+        serializer.save(user=user)  # Explicitly pass user to save method
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

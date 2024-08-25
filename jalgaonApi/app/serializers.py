@@ -150,9 +150,23 @@ class LikedShopsCreateSerializer(serializers.Serializer):
     def create(self, validated_data):
         return LikedShops.objects.create(**validated_data)
 
+class ShopReviewCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShopReview
+        fields = ['user', 'shop_listing', 'rating_star', 'user_review', 'timestamp']
+
+
+class ShopReviewCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShopReview
+        fields = ['user', 'shop_listing', 'rating_star', 'user_review', 'timestamp']
+
+    def create(self, validated_data):
+        return ShopReview.objects.create(**validated_data)
+
 
 class ShopReviewSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)  # Assuming you have UserSerializer
+    user = UserSerializer(read_only=True, source='user.phone_number')  # Assuming you have UserSerializer
 
     class Meta:
         model = ShopReview

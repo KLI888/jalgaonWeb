@@ -96,9 +96,9 @@ const TermsAndConditions = () => {
       <section className="terms_section">
         <h2 className="section-title">9. Contact Us</h2>
         <div className="contact-info">
-          <p><strong>By email:</strong> [Your email address]</p>
+          <p><strong>By email:</strong> support@jalgaon.com</p>
           <p><strong>By visiting this page on our website:</strong> [Contact page URL]</p>
-          <p><strong>By phone number:</strong> [Your phone number]</p>
+          <p><strong>By phone number:</strong> 9272100299</p>
         </div>
       </section>
     </div>

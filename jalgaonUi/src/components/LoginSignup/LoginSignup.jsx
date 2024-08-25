@@ -4,7 +4,6 @@ import axios from 'axios';
 import { assets } from '../../assets/assets';
 import { FormContext } from '../../context/FormContext';
 import { UserContext } from '../../context/UserContext';
-import { LoginContext } from '../../context/LoginContext';
 
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
@@ -22,7 +21,6 @@ client.interceptors.request.use((config) => {
 
 function LoginSignup() {
   const djangoApi = import.meta.env.VITE_DJANGO_API;
-  // const {  } = useContext(LoginContext);
   const { user, setUser, isLogin, setIsLogin } = useContext(UserContext);
   const { closeForm, setCloseForm } = useContext(FormContext);
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -32,13 +30,15 @@ function LoginSignup() {
 
   const getCsrfToken = async () => {
     try {
-        const response = await axios.get(`${djangoApi}/app/csrf-token/`);
-        return response.data.csrfToken;
+      const response = await axios.get(`${djangoApi}/app/csrf-token/`);
+      console.log('Fetched CSRF Token:', response.data.csrfToken); // Log token for debugging
+      return response.data.csrfToken;
     } catch (error) {
-        console.error('Error fetching CSRF token:', error);
-        return '';
+      console.error('Error fetching CSRF token:', error);
+      return '';
     }
   };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -48,61 +48,74 @@ function LoginSignup() {
       const response = await axios.post(`${djangoApi}/app/register/`, {
         phone_number: phoneNumber,
         password: userPassword
+      }, {
+        headers: {
+          'X-CSRFToken': csrfToken,
+        }
       });
 
-      handleLoginSubmit(e)
-    } 
-    catch (error){
-      console.error('Login failed', error);
+      handleLoginSubmit(e);
+    } catch (error) {
+      console.error('Registration failed', error);
+      setErrorMessage('Registration failed');
     }
+  };
+
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    const csrfToken = await getCsrfToken();
+
+    try {
+      const response = await axios.post(`${djangoApi}/app/login/`, {
+        phone_number: phoneNumber,
+        password: userPassword
+      }, {
+        headers: {
+          'X-CSRFToken': csrfToken,
+        },
+        withCredentials: true
+      });
+
+      const { user, token } = response.data;
+      setUser(user);
+      setIsLogin(true);
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      setCloseForm(true);
+      console.log('Login successful', user);
+
+      // Fetch token key
+      await getTokenKey(csrfToken);
+    } catch (error) {
+      console.error('Login failed', error);
+      setErrorMessage('Login failed');
+    }
+  };
+
+  const getTokenKey = async (csrfToken) => {
+    try {
+      const response = await axios.post(`${djangoApi}/app/tokenKey/`, {
+        phone_number: phoneNumber,
+        password: userPassword
+      },{
+        headers: {
+          'X-CSRFToken': csrfToken,
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
   
-};
-
-const handleLoginSubmit = async (event) => {
-  event.preventDefault();
-  try {
-    const response = await axios.post(`${djangoApi}/app/login/`, {
-      phone_number: phoneNumber,
-      password: userPassword
-    });
-
-    const { user, token } = response.data;
-
-    // Store the token in local storage
-    setUser(user)
-    setIsLogin(true)
-    localStorage.setItem('token', token);
-    console.log(token)
-    console.log(user)
-    // Optionally, you can store user info as well
-    localStorage.setItem('user', JSON.stringify(user));
-
-    // Redirect or perform other actions after successful login
-    console.log('Login successful', user);
-    setCloseForm(true)
-  } catch (error) {
-    console.error('Login failed', error);
-    // Handle login error (e.g., show an error message to the user)
-  }
-
-
-  try {
-    const response = await axios.post(`${djangoApi}/app/tokenKey/`, {
-      phone_number: phoneNumber,
-      password: userPassword
-    });
-
-    if (response.status === 200) {
+      if (response.status === 200) {
         // Store token in localStorage
         localStorage.setItem('tokenKey', response.data.token);
         console.log('Token stored successfully:', response.data.token);
-    } else {
+      } else {
         console.error('Error:', response.data.error);
+      }
+    } catch (error) {
+      console.error('Error fetching token key:', error);
+      setErrorMessage('Error fetching token key');
     }
-  } catch (error) {
-      console.error('Error logging in:', error);
-  }
-};
+  };
 
   useEffect(() => {
     const checkUserSession = async () => {

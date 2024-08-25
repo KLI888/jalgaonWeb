@@ -5,6 +5,7 @@ import BusinessDetailsCard from '../components/Businesscompo/BusinessDetailsCard
 import CompanyWork from '../components/Businesscompo/CompanyWork'
 import BusinessContact from '../components/Businesscompo/BusinessContact'
 import axios from 'axios'
+import LoginSignup from '../components/LoginSignup/LoginSignup'
 
 
 function BusinessDetailsPage() {
@@ -48,6 +49,7 @@ function BusinessDetailsPage() {
             <CompanyWork businessData={businessData}/>
             <BusinessContact businessData={businessData}/> 
         </div>
+        <LoginSignup />
     </div>
   )
 }

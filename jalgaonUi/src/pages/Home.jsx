@@ -23,7 +23,7 @@ function Home() {
       <Services />
       <Categorytile/>
       <Releatedarticles />
-      {/* <LoginSignup /> */}
+      <LoginSignup />
       <SpecialSections />
 
     </div>

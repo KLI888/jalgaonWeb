@@ -87,13 +87,13 @@
 
     .services_cards {
         justify-content: center;
-        align-items: center;
+        align-items: start;
         flex-wrap: wrap;
         gap: 10px;
     }
 
     .service {
-        width: 80px;
+        width: 70px;
     }
 }
 
