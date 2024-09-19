@@ -103,20 +103,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'jalgaonApi.wsgi.application'
 
 # Database
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'jalgaon_database',
-#         'USER': 'postgres',
-#         'PASSWORD': 'kriss',
-#         'HOST': 'localhost',
-#         'PORT': '5432'
-#     }
-# }
-
-
-
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -167,9 +153,6 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'https://api.jalgaon.com',
     'https://www.jalgaon.com',
-    'http://localhost:5173',
-    'http://127.0.0.1:8000'
+    'capacitor://localhost'
 
 ]
-# CORS_ALLOW_ALL_ORIGINS = True  # or specify allowed origins
-

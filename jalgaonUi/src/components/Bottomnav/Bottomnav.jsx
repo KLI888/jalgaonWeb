@@ -41,9 +41,9 @@ function Bottomnav() {
           <p>Add Listing</p>
         </NavLink>
         <NavLink
-          to="/"
-          className={`bottom_nav_links ${activeLink === 'events' ? 'active' : ''}`}
-          onClick={() => handleLinkClick('events')}
+          to="/addListig"
+          className={`bottom_nav_links ${activeLink === 'news' ? 'active' : ''}`}
+          onClick={() => handleLinkClick('news')}
         >
           <i className='bx bx-calendar'></i>
           <p>News</p>
@@ -61,7 +61,7 @@ function Bottomnav() {
             </NavLink>
           </>
         ) : (
-          <NavLink onClick={() => setCloseForm(!closeForm)} className="bottom_nav_links">
+          <NavLink onClick={() => setCloseForm(!closeForm)} className={`bottom_nav_links ${activeLink === 'account' ? 'active' : ''}`}>
             <i className='bx bx-user-circle'></i>
             <p>Account</p>
           </NavLink>

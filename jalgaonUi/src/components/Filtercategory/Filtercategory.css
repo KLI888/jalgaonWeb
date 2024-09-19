@@ -26,11 +26,11 @@
     display: flex;
     justify-content: start;
     align-items: start;
-    gap: 1px;
+    gap: 10px;
     overflow-x: scroll;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
-    cursor: pointer;
+    /* cursor: pointer; */
     
 }
 
@@ -54,6 +54,7 @@
     text-align: center;
     font-size: 14px;
     /* background-color: aqua; */
+    cursor: pointer;
 }
 .category_card img {
     width: 120px;

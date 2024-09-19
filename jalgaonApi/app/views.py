@@ -167,12 +167,13 @@ class FinanceTickleView(APIView):
 
     def get(self, request):
         try:
+            print("ok")
             financeData = FinanceData.objects.all()
             serializer = FinanceDataSerializer(financeData, many=True)
             return Response({"financeData": serializer.data}, status=status.HTTP_200_OK)
         except Exception as e:
             print(f"Error occurred: {e}")
-            return Response({"error": "An error occurred while fetching finance data."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "An error occurred while fetching finance data. n"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class HomeCrouselAdsView(APIView):
@@ -384,3 +385,13 @@ def get_shop_reviews(request):
     # reviews = ShopReview.objects.filter(shop_listing=shop_id)
     serializer = ShopReviewSerializer(reviews, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+from rest_framework.filters import SearchFilter
+class ShopSearchView(generics.ListAPIView):
+    permission_classes = [permissions.AllowAny]
+
+    queryset = ShopListing.objects.all()
+    serializer_class = ShopListingSerializer  # Corrected this line
+    filter_backends = [SearchFilter]
+    search_fields = ['business_name']

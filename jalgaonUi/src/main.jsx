@@ -17,6 +17,7 @@ import AboutPage from './pages/AboutPage';
 import TermsPage from './pages/TermsPage';
 import AddListingForm from './components/AllForms/AddListingForm';
 import ContactPage from './pages/ContactPage';
+import SearchPage from './pages/SearchPage';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<Layout />}>
@@ -29,6 +30,7 @@ const router = createBrowserRouter(
       <Route path='allarticlse' element={<ArticlesPage />} />
       <Route path='articleView/:articleId' element={<ArticleViewPage />} />
 
+      <Route path='searchResults' element={<SearchPage />} />
       
       <Route path='about' element={<AboutPage />} />
       <Route path='contact' element={<ContactPage />} />

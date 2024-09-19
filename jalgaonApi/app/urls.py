@@ -43,9 +43,12 @@ urlpatterns = [
     path('shop_reviews/', submit_review, name='submit_review'),
     path('get_shop_reviews/', get_shop_reviews, name='get_shop_reviews'),
 
+    path('searchResult/', ShopSearchView.as_view(), name='searchResult'),
 
 
 
+
+    path('searchResult/', ShopSearchView.as_view(), name='searchResult'),	
 
 
     # path('shopListing/', shop_listing, name='shopListing'),

@@ -8,7 +8,8 @@ function CategoryPage() {
   const djangoApi = import.meta.env.VITE_DJANGO_API;
 
   const { mainCategoryId, mainCategory } = useParams();
-  const [businessData, setBusinessData] = useState([])
+  const [businessData, setBusinessData] = useState([]);
+  const [filterSubCategory, setFilterSubCategory] = useState()
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -30,8 +31,8 @@ function CategoryPage() {
 }, []);
   return (
     <div className="main_section">
-      <Filtercategory mainCategoryId={mainCategoryId} mainCategory={mainCategory}/>
-      <Categorysection businessData={businessData} mainCategory={mainCategory}  />
+      <Filtercategory mainCategoryId={mainCategoryId} mainCategory={mainCategory} setFilterSubCategory={setFilterSubCategory}/>
+      <Categorysection businessData={businessData} mainCategory={mainCategory} filterSubCategory={filterSubCategory}  />
       <LoginSignup />
     </div>
   )
