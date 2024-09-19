@@ -45,6 +45,7 @@ urlpatterns = [
 
     path('searchResult/', ShopSearchView.as_view(), name='searchResult'),
 
+    path('searchResult/', ShopSearchView.as_view(), name='searchResult'),
 
 
 
